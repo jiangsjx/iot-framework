@@ -1,0 +1,54 @@
+syntax = "v1"
+
+info(
+	title: "Device API"
+	desc: "Device API for IoT Service"
+	author: "jiangsjx"
+	email: "shengjie571@126.com"
+	version: "v0.1.0"
+)
+
+type BaseDevice {
+	UUID     string   `json:"uuid"`
+	Name     string   `json:"name"`
+	Endpoint string   `json:"endpoint"`
+	Funcs    []string `json:"funcs"`
+}
+
+type BaseResp {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+type GetDeviceReq {
+}
+
+type GetDeviceResp {
+	Device *BaseDevice `json:"device"`
+}
+
+type CallFuncReq {
+	Func string `path:"func"`
+}
+
+type CallFuncResp {
+	BaseResp
+}
+
+@server(
+	prefix: api/v1
+)
+service device-api {
+	@doc(
+		summary: "获取设备信息"
+	)
+	@handler getDevice
+	get /device (GetDeviceReq) returns (GetDeviceResp)
+	
+	@doc(
+		summary: "调用设备功能"
+	)
+	@handler callFunc
+	post /func/:func (CallFuncReq) returns (CallFuncResp)
+}

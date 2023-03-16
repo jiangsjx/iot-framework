@@ -1,0 +1,82 @@
+syntax = "v1"
+
+info(
+	title: "Server API"
+	desc: "Server API for IoT Service"
+	author: "jiangsjx"
+	email: "shengjie571@126.com"
+	version: "v0.1.0"
+)
+
+type BaseDevice {
+	UUID     string   `json:"uuid"`
+	Name     string   `json:"name"`
+	Endpoint string   `json:"endpoint"`
+	Funcs    []string `json:"funcs"`
+}
+
+type BaseResp {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+type ScanReq {
+}
+
+type ScanResp {
+	BaseResp
+}
+
+type GetDevicesReq {
+}
+
+type GetDevicesResp {
+	Devices []*BaseDevice `json:"devices"`
+}
+
+type GetDeviceReq {
+	UUID string `path:"uuid"`
+}
+
+type GetDeviceResp {
+	Device *BaseDevice `json:"device"`
+}
+
+type CallFuncReq {
+	UUID string `path:"uuid"`
+	Func string `path:"func"`
+}
+
+type CallFuncResp {
+	BaseResp
+}
+
+@server(
+	prefix: api/v1
+)
+service server-api {
+	@doc(
+		summary: "扫描设备"
+	)
+	@handler scan
+	post /scan (ScanReq) returns (ScanResp)
+	
+	@doc(
+		summary: "获取设备列表"
+	)
+	@handler getDevices
+	get /devices (GetDevicesReq) returns (GetDevicesResp)
+	
+	@doc(
+		summary: "获取设备信息"
+	)
+	@handler getDevice
+	get /device/:uuid (GetDeviceReq) returns (GetDeviceResp)
+	
+	@doc(
+		summary: "调用设备功能"
+	)
+	@handler callFunc
+	post /device/:uuid/func/:func (CallFuncReq) returns (CallFuncResp)
+}
