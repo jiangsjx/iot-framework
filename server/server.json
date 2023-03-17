@@ -1,0 +1,278 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Server API",
+    "description": "Server API for IoT Service",
+    "version": "v0.1.0"
+  },
+  "host": "192.168.134.56:8888",
+  "basePath": "/",
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/device/{uuid}": {
+      "get": {
+        "summary": "获取设备信息",
+        "operationId": "getDevice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetDeviceResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "server-api"
+        ]
+      }
+    },
+    "/api/v1/device/{uuid}/func/{func}": {
+      "post": {
+        "summary": "调用设备功能",
+        "operationId": "callFunc",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CallFuncResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "func",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CallFuncReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "server-api"
+        ]
+      }
+    },
+    "/api/v1/devices": {
+      "get": {
+        "summary": "获取设备列表",
+        "operationId": "getDevices",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/GetDevicesResp"
+            }
+          }
+        },
+        "requestBody": {},
+        "tags": [
+          "server-api"
+        ]
+      }
+    },
+    "/api/v1/scan": {
+      "post": {
+        "summary": "扫描设备",
+        "operationId": "scan",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ScanResp"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ScanReq"
+            }
+          }
+        ],
+        "requestBody": {},
+        "tags": [
+          "server-api"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "BaseDevice": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "funcs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "BaseDevice",
+      "required": [
+        "uuid",
+        "name",
+        "endpoint",
+        "funcs"
+      ]
+    },
+    "BaseResp": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "type": "object"
+        }
+      },
+      "title": "BaseResp",
+      "required": [
+        "code",
+        "message",
+        "data"
+      ]
+    },
+    "CallFuncReq": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "func": {
+          "type": "string"
+        }
+      },
+      "title": "CallFuncReq",
+      "required": [
+        "uuid",
+        "func"
+      ]
+    },
+    "CallFuncResp": {
+      "type": "object",
+      "properties": {
+        "": {
+          "$ref": "#/definitions/BaseResp"
+        }
+      },
+      "title": "CallFuncResp"
+    },
+    "GetDeviceReq": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        }
+      },
+      "title": "GetDeviceReq",
+      "required": [
+        "uuid"
+      ]
+    },
+    "GetDeviceResp": {
+      "type": "object",
+      "properties": {
+        "device": {
+          "$ref": "#/definitions/BaseDevice"
+        }
+      },
+      "title": "GetDeviceResp",
+      "required": [
+        "device"
+      ]
+    },
+    "GetDevicesReq": {
+      "type": "object",
+      "title": "GetDevicesReq"
+    },
+    "GetDevicesResp": {
+      "type": "object",
+      "properties": {
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BaseDevice"
+          }
+        }
+      },
+      "title": "GetDevicesResp",
+      "required": [
+        "devices"
+      ]
+    },
+    "ScanReq": {
+      "type": "object",
+      "title": "ScanReq"
+    },
+    "ScanResp": {
+      "type": "object",
+      "properties": {
+        "": {
+          "$ref": "#/definitions/BaseResp"
+        }
+      },
+      "title": "ScanResp"
+    }
+  },
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "description": "Enter JWT Bearer token **_only_**",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "apiKey": []
+    }
+  ]
+}
